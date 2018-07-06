@@ -1,0 +1,23 @@
+<?php
+$this->headLink()->appendStylesheet($this->assetUrl('css/solr-admin.css', 'Solr'));
+$this->headScript()->appendScript(
+    'var schema = ' . json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ';
+var sourceLabels = ' . json_encode($sourceLabels, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ';'
+);
+$this->headScript()->appendFile($this->assetUrl('js/solr-admin.js', 'SolrImprovements'));
+?>
+
+<?php $form->prepare(); ?>
+<?php echo $this->form()->openTag($form); ?>
+<div id="page-actions">
+    <button><?php echo $this->translate('Save'); ?></button>
+</div>
+<?php $source = $form->get('o:source');
+echo $this->formRow($source),
+    $this->formRow($form->get('o:field_name')),
+    $this->formCollection($form->get('o:settings'));
+
+$this->trigger('view.add.form.after'); ?>
+<?php echo $this->form()->closeTag(); ?>
+
+<?php $this->trigger('view.add.after'); ?>
