@@ -21,12 +21,12 @@ class ItemValueExtractorDelegatorFactory implements DelegatorFactoryInterface
 	public function __invoke(ContainerInterface $services, $name, callable $callback, array $options = null)
 	{
 		$api = $services->get('Omeka\ApiManager');
-        $config = $services->get('Config');
-        $baseFilepath = $config['file_store']['local']['base_path'] ?: (OMEKA_PATH . '/files');
+//        $config = $services->get('Config'); // @dkm
+//        $baseFilepath = $config['file_store']['local']['base_path'] ?: (OMEKA_PATH . '/files'); // @dkm
 
         $itemValueExtractor = new ItemValueExtractorDelegator;
         $itemValueExtractor->setApiManager($api);
-        $itemValueExtractor->setBaseFilepath($baseFilepath);
+//        $itemValueExtractor->setBaseFilepath($baseFilepath); // @dkm
 
         return $itemValueExtractor;
 	}

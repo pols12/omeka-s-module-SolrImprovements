@@ -76,7 +76,7 @@ class MappingControllerDelegator extends MappingController
         $view->setVariable('solrNode', $solrNode);
         $view->setVariable('form', $form);
         $view->setVariable('schema', $this->getSolrSchema($solrNodeId));
-        $view->setVariable('sourceLabels', $this->getSourceLabels());
+//        $view->setVariable('sourceLabels', $this->getSourceLabels()); // @dkm
         return $view;
     }
 
@@ -124,8 +124,8 @@ class MappingControllerDelegator extends MappingController
         $view->setVariable('mapping', $mapping);
         $view->setVariable('form', $form);
         $view->setVariable('schema', $this->getSolrSchema($solrNodeId));
-        $view->setVariable('sourceLabels', $this->getSourceLabels());
-		$view->setTemplate('solr/admin/mapping/edit');
+//        $view->setVariable('sourceLabels', $this->getSourceLabels()); // @dkm
+		$view->setTemplate('solr/admin/mapping/edit'); // @delegator
         return $view;
     }
 }
