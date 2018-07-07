@@ -26,6 +26,7 @@ class ItemValueExtractorDelegatorFactory implements DelegatorFactoryInterface
 
         $itemValueExtractor = new ItemValueExtractorDelegator;
         $itemValueExtractor->setApiManager($api);
+        $itemValueExtractor->setLogger($services->get('Omeka\Logger'));
 //        $itemValueExtractor->setBaseFilepath($baseFilepath); // @dkm
 
         return $itemValueExtractor;

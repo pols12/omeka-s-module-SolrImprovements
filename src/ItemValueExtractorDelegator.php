@@ -42,11 +42,8 @@ class ItemValueExtractorDelegator extends ItemValueExtractor
 	 */
 	protected $logger;
 	
-	protected function logger() {
-		if(!isset($this->logger))
-			$this->logger = $this->getServiceLocator()->get('Omeka\Logger');
-		
-		return $this->logger;
+	public function setLogger($logger) {
+		$this->logger=$logger;
 	}
 	
 	/**
@@ -74,7 +71,7 @@ class ItemValueExtractorDelegator extends ItemValueExtractor
 		{
 			// Don’t try to index item set or media if $resource is not an item
 			if(! $resource instanceof ItemRepresentation) {
-				$this->logger()->warn('Tried to get '.$matches[0].' of non item resource.');
+				$this->logger->warn('Tried to get '.$matches[0].' of non item resource.');
 				return [];
 			}
 
@@ -108,8 +105,16 @@ class ItemValueExtractorDelegator extends ItemValueExtractor
 			case 'o:id':
 				return [$resource->id()];
 			case 'media':
+				if(! $resource instanceof ItemRepresentation) {
+					$this->logger->warn('Tried to get media of non item resource.');
+					return [];
+				}
 				return $this->extractMediaValue($resource, $subProperty);
 			case 'item_set':
+				if(! $resource instanceof ItemRepresentation) {
+					$this->logger->warn('Tried to get item_set of non item resource.');
+					return [];
+				}
 				return $this->extractItemSetValue($resource, $subProperty);
 		}
 		
