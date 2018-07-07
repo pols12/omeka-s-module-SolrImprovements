@@ -41,7 +41,6 @@ class SolrMappingFormDelegator extends SolrMappingForm
     public function init()
     {
         $translator = $this->getTranslator();
-		$this->setInputFilter(new \Zend\InputFilter\InputFilter());
 
         $this->add([
             'type' => Collection::class,
@@ -51,12 +50,9 @@ class SolrMappingFormDelegator extends SolrMappingForm
                 'should_create_template' => true,
                 'allow_add' => true,
                 'label' => $translator->translate('Source'),
-                'target_element' => [
-                    'type' => Select::class,
-                    'options' => [
-                        'value_options' => $this->getSourceOptions(),
-                    ],
-                ],
+                'target_element' => new SourceFieldset(null, [
+							'options' => $this->getSourceOptions()
+						]),
             ],
         ]);
 
@@ -98,12 +94,12 @@ class SolrMappingFormDelegator extends SolrMappingForm
             'required' => false,
         ]);
 
-        $this->remove('csrf');
+//		echo '<pre>';var_dump($inputFilter);echo'</pre>';exit;
     }
 	public function getInputFilter() {
 		$filters = parent::getInputFilter();
 		$filters->remove('csrf');
-		
+
 		return $filters;
 	}
 }

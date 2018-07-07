@@ -12,8 +12,7 @@ $this->headScript()->appendFile($this->assetUrl('js/solr-admin.js', 'SolrImprove
 <div id="page-actions">
     <button><?php echo $this->translate('Save'); ?></button>
 </div>
-<?php $source = $form->get('o:source');
-echo $this->formRow($source),
+<?= $this->formRow($form->get('o:source')),
     $this->formRow($form->get('o:field_name')),
     $this->formCollection($form->get('o:settings'));
 

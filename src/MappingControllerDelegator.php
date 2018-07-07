@@ -53,9 +53,10 @@ class MappingControllerDelegator extends MappingController
 //			var_dump($this->params()->fromPost());exit;
             if ($form->isValid()) {
                 $data = $form->getData();
-				var_dump($data); 
-                $data['o:source'] = implode('/', $data['o:source']);
-				var_dump($data['o:source']); exit;
+				var_dump($data);
+				
+				$this->sourceArrayToStr($data['o:source']);
+//				var_dump($data['o:source']); exit;
                 $data['o:solr_node']['o:id'] = $solrNodeId;
                 $data['o:resource_name'] = $resourceName;
                 $this->api()->create('solr_mappings', $data);
@@ -93,7 +94,7 @@ class MappingControllerDelegator extends MappingController
             'resource_name' => $resourceName,
         ]);
         $mappingData = $mapping->jsonSerialize();
-        $mappingData['o:source'] = explode('/', $mappingData['o:source']);
+        $this->sourceStrToArray($mappingData['o:source']);
         $form->setData($mappingData);
 
         if ($this->getRequest()->isPost()) {
@@ -103,7 +104,7 @@ class MappingControllerDelegator extends MappingController
 							&& array_key_exists('csrf', $errors)) )
 			{
                 $data = $form->getData();
-				$data['o:source'] = implode('/', $data['o:source']);
+				$this->sourceArrayToStr($data['o:source']);
                 $data['o:solr_node']['o:id'] = $solrNodeId;
                 $data['o:resource_name'] = $resourceName;
                 $this->api()->update('solr_mappings', $id, $data);
@@ -128,4 +129,32 @@ class MappingControllerDelegator extends MappingController
 		$view->setTemplate('solr/admin/mapping/edit'); // @delegator
         return $view;
     }
+
+	/**
+	 * Turns
+	 * [
+	 *	0 => ['source' => "foo"]
+	 *	1 => ['source' => "bar"]
+	 * ]
+	 * into "foo/bar".
+	 * @param array $source
+	 */
+	protected function sourceArrayToStr(&$source) {
+		$source = implode(
+				'/',
+				array_map(
+					function($v) { return $v['source']; },
+					$source
+				)
+		);
+	}
+	
+	protected function sourceStrToArray(&$source) {
+		$source = explode('/', $source);
+		$source = array_map(
+			function($v) { return ['source' => $v]; },
+			$source
+		);
+	}
+
 }

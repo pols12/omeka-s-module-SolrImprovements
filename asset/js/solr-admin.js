@@ -62,7 +62,7 @@
         var input = $('input[name="o:field_name"]');
         var indexOfStar = field.indexOf('*');
         if (indexOfStar != -1) {
-            var source = $('select[name="o:source[0]"]').val();
+            var source = $('select[name="o:source[0][source]"]').val();
             source = source.replace(/[^a-zA-Z0-9]/g, '_');
             fieldName = field.replace('*', source);
 
@@ -184,9 +184,9 @@
     }
 
     $(document).ready(function() {
-        $('select[name="o:source[0]"]')
+        $('select[name="o:source[0][source]"]')
             .attr('id', 'source-selector');
-        $('select[name="o:source[0]"]').chosen({
+        $('select[name="o:source[0][source]"]').chosen({
             allow_single_deselect: true,
             disable_search_threshold: 10,
             width: '100%',
