@@ -31,25 +31,90 @@ namespace SolrImprovements;
 
 use Solr\ValueExtractor\ItemValueExtractor;
 use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
+use Omeka\Api\Representation\AbstractResourceRepresentation;
 use Omeka\Api\Representation\ValueRepresentation;
+use Omeka\Api\Representation\ItemRepresentation;
 
 class ItemValueExtractorDelegator extends ItemValueExtractor
 {
+	/**
+	 * @var Zend\Log\LoggerInterface Logger
+	 */
+	protected $logger;
+	
+	protected function logger() {
+		if(!isset($this->logger))
+			$this->logger = $this->getServiceLocator()->get('Omeka\Logger');
+		
+		return $this->logger;
+	}
+	
+	/**
+	 * Overriding to manage item sets and media in the same way as subproperties.
+	 */
+	public function getAvailableFields() {
+		$fields = parent::getAvailableFields();
+		$fields['o:id'] = [ 'label' => 'Internal identifier' ];
+		unset($fields['item_set']['children']);
+		unset($fields['media']['children']);
+		return $fields;
+	}
+	
+	/**
+	 * Overriding to handle the cases where $source is item_set or media without
+	 * sub-property and the case where item_set or media are sub-property of
+	 * non-item resource.
+	 * @param AbstractResourceRepresentation $resource
+	 * @param string $source
+	 * @return array
+	 */
+	public function extractValue(AbstractResourceRepresentation $resource, $source) {
+		if (preg_match('/^media\/(.*)|^media$/', $source, $matches)
+				|| preg_match('/^item_set\/(.*)|^item_set$/', $source, $matches))
+		{
+			// Don’t try to index item set or media if $resource is not an item
+			if(! $resource instanceof ItemRepresentation) {
+				$this->logger()->warn('Tried to get '.$matches[0].' of non item resource.');
+				return [];
+			}
+
+			// Media or item_set indexing without sub-property set:
+			elseif (empty($matches[1])) { 
+				if('media' === $matches[0])
+					return $this->extractMediaValue($resource, '');
+				else //item_set
+					return $this->extractItemSetValue($resource, '');
+			}
+        }
+		return parent::extractValue($resource, $source);
+	}
+	
     /**
      * Extract the values of the given property of the given item.
      * If a value is a resource, then this method is called recursively with
      * the source part after the slash as $source.
-     * @param AbstractResourceEntityRepresentation $representation Item
-     * @param string $source Property (RDF term).
+     * @param AbstractResourceEntityRepresentation $resource Item
+     * @param string|null $source Property (RDF term).
      * @return string[] Human-readable values.
      */
-    protected function extractPropertyValue(AbstractResourceEntityRepresentation $representation, $source)
+    protected function extractPropertyValue(AbstractResourceEntityRepresentation $resource, $source)
     {
-        @list($property, $subProperty) = explode('/', $source, 2);
+        @list($property, $subProperty) = explode('/', $source, 2); //$subProperty may be NULL
+		
+		
+		switch($property) {
+			case '': // If item_set or media have been used without sub-property
+				return [$resource->displayTitle()];
+			case 'media':
+				return $this->extractMediaValue($resource, $subProperty);
+			case 'item_set':
+				return $this->extractItemSetValue($resource, $subProperty);
+		}
+		
         $extractedValue = [];
         /* @var $values ValueRepresentation[] */
-        $values = $representation->value($property, ['all' => true, 'default' => []]);
-        foreach ($values as $i => $value) {
+        $values = $resource->value($property, ['all' => true, 'default' => []]);
+        foreach ($values as $value) {
             $type = $value->type();
             if ($type === 'literal' || $type == 'uri') {
                 $extractedValue[] = (string) $value;
