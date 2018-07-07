@@ -105,6 +105,8 @@ class ItemValueExtractorDelegator extends ItemValueExtractor
 		switch($property) {
 			case '': // If item_set or media have been used without sub-property
 				return [$resource->displayTitle()];
+			case 'o:id':
+				return [$resource->id()];
 			case 'media':
 				return $this->extractMediaValue($resource, $subProperty);
 			case 'item_set':
@@ -141,7 +143,7 @@ class ItemValueExtractorDelegator extends ItemValueExtractor
         if (isset($property)) {
             $extractedValues = array_merge(
                     $extractedValues,
-                    $this->extractPropertyValue($value->valueResource(), $property)
+                    $this->extractValue($value->valueResource(), $property)
             );
         } else {
             $resourceTitle = $value->valueResource()->displayTitle('');
