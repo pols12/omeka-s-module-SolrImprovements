@@ -36,9 +36,8 @@ class SourceFieldset extends Fieldset implements InputFilterProviderInterface
 
 	public function getInputFilterSpecification() {
 		return [
-			'source' => [
-				'required' => true,
-			]
+			'source' => ['required' => true],
+			'set_sub' => ['required' => false],
 		];
 	}
 
