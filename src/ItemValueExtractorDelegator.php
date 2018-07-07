@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Edited by Pols12. Original version licence:
  * Copyright BibLibre, 2016-2017
  *
  * This software is governed by the CeCILL license under French law and abiding

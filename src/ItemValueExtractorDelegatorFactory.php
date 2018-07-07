@@ -12,7 +12,7 @@ use Zend\ServiceManager\Factory\DelegatorFactoryInterface;
 use Interop\Container\ContainerInterface;
 
 /**
- * Description of ItemValueExtractorDelegatorFactory
+ * Duplicate of original factory, plus logger injecting.
  *
  * @author pols12
  */

@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Edited by Pols12. Original version licence:
  * Copyright BibLibre, 2017
  * Copyright Daniel Berthereau, 2017-2018
  *
@@ -50,13 +51,12 @@ class MappingControllerDelegator extends MappingController
 
         if ($this->getRequest()->isPost()) {
             $form->setData($this->params()->fromPost());
-//			var_dump($this->params()->fromPost());exit;
+
             if ($form->isValid()) {
                 $data = $form->getData();
-				var_dump($data);
 				
 				$this->sourceArrayToStr($data['o:source']);
-//				var_dump($data['o:source']); exit;
+
                 $data['o:solr_node']['o:id'] = $solrNodeId;
                 $data['o:resource_name'] = $resourceName;
                 $this->api()->create('solr_mappings', $data);

@@ -93,9 +93,8 @@ class SolrMappingFormDelegator extends SolrMappingForm
             'name' => 'formatter',
             'required' => false,
         ]);
-
-//		echo '<pre>';var_dump($inputFilter);echo'</pre>';exit;
     }
+	
 	public function getInputFilter() {
 		$filters = parent::getInputFilter();
 		$filters->remove('csrf');

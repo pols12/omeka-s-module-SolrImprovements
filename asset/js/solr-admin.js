@@ -171,14 +171,10 @@
         if(checkbox.checked) {
             template = template.replace(/__index__/g, count);
             container.append(template);
-//            container.append('<label><input type="checkbox" id="addSubProperty'
-//                    + count + '">'
-//					+ Omeka.jsTranslate('Set sub-property') + '</label>');
             $('input[name="o:source['+count+'][set_sub]"]').change(function() {
                 subPropertyChange(this, count);
             });
         } else {
-//            container.find('input[id^="addSubProperty"]').parent().slice(index+1).remove();
             container.children('fieldset').slice(index+1).remove();
         }
     }
@@ -195,14 +191,10 @@
         }).on('change', function() {
             generateFieldName();
             generateSourceLabel();
-        })
-//		.parent().append( // sub-property managing
-//            '<label><input type="checkbox" id="addSubProperty0">'
-//            + Omeka.jsTranslate('Set sub-property') + '</label>'
-//        )
-		;
+        });
 
-        $('input[name="o:source[0][set_sub]"]').change(function() { // sub-property managing
+		// sub-property managing
+        $('input[name="o:source[0][set_sub]"]').change(function() {
             subPropertyChange(this, 0);
         });
 
