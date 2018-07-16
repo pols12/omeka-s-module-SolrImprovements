@@ -55,6 +55,7 @@ class ItemValueExtractorDelegator extends ItemValueExtractor
 		$fields['o:id'] = [ 'label' => 'Internal identifier' ];
 		unset($fields['item_set']['children']);
 		unset($fields['media']['children']);
+		$fields['content'] = ['label' => 'HTML Content (for media)'];
 		return $fields;
 	}
 	
